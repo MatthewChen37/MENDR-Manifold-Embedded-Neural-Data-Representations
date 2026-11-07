@@ -1,8 +1,8 @@
 """Evaluate released fine-tuned MENDR weights on a task's test split.
 
-  python evaluate.py --task tuab --data_root /data/TUAB/v3.0.1/edf --weights weights/finetuned/tuab_s789.pth
-  python evaluate.py --task physio --data_root /data/eegmmidb/1.0.0 --weights weights/finetuned/physio_s789.pth
-      (PhysioMI: the five files physio_s789_fold{0..4}.pth are evaluated on their folds and averaged)
+  python evaluate.py --task tuab --data_root /data/TUAB/v3.0.1/edf --weights weights/Finetuned/Tuab/seed789.pth
+  python evaluate.py --task physio --data_root /data/eegmmidb/1.0.0 --weights weights/Finetuned/Physio/seed789.pth
+      (PhysioMI: the five files seed789_fold{0..4}.pth are evaluated on their folds and averaged)
 
 MENDR evaluates with per-band BatchNorm statistics (mendr/perband_bn.py). They are not stored in the weights file:
 like the original run, this script recomputes them on 50 batches of the task's training split (fixed seed) before

@@ -7,7 +7,7 @@ cd "$(dirname "$0")/.."
 declare -A ROOT=([tuab]=$TUAB [tuev]=$TUEV [physio]=$PHYSIO [seedv]=$SEEDV [chbmit]=$CHBMIT [isruc]=$ISRUC)
 for task in tuab tuev physio seedv chbmit isruc; do
   for seed in 789 1024 31 64 99; do
-    python finetune.py --task $task --data_root "${ROOT[$task]}" --encoder weights/encoder_ep29.pth --seed $seed \
+    python finetune.py --task $task --data_root "${ROOT[$task]}" --encoder weights/pretrained.pth --seed $seed \
       --out results/${task}_s${seed}.json --cache_dir cache/
   done
 done

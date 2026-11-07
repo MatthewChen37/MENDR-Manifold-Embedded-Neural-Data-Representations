@@ -1,6 +1,6 @@
 """Fine-tune MENDR on one downstream task with one seed (the Table 1 protocol).
 
-  python finetune.py --task tuab --data_root /data/TUAB/v3.0.1/edf --encoder weights/encoder_ep29.pth --seed 789 \
+  python finetune.py --task tuab --data_root /data/TUAB/v3.0.1/edf --encoder weights/pretrained.pth --seed 789 \
       --out results/tuab_s789.json [--save_weights weights_out/tuab_s789.pth] [--cache_dir cache/]
 
 Selection uses the validation split only; the test split is evaluated once, with the selected weights. Table 1 reports
@@ -40,7 +40,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--task", required=True, choices=sorted(TASKS))
     p.add_argument("--data_root", required=True, help="dataset directory (see README, 'Data')")
-    p.add_argument("--encoder", default="weights/encoder_ep29.pth", help="pretrained encoder; '' trains from scratch")
+    p.add_argument("--encoder", default="weights/pretrained.pth", help="pretrained encoder; '' trains from scratch")
     p.add_argument("--seed", type=int, required=True)
     p.add_argument("--out", required=True, help="result JSON")
     p.add_argument("--save_weights", default="", help="save the selected weights here (never overwrites)")

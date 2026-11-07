@@ -2,10 +2,10 @@
 
   python pretrain.py --cache_dir cache/tuh_200hz --checkpoint_dir checkpoints/mendr_pretrain
 
-Defaults are the settings of the released encoder (weights/encoder_ep29.pth): 30 epochs, batch 128, AdamW lr 5e-4 and
+Defaults are the settings of the released encoder (weights/pretrained.pth): 30 epochs, batch 128, AdamW lr 5e-4 and
 weight decay 0.05, 3 warm-up epochs then cosine decay, 10 random 6 s epochs per recording per epoch, seed 42, loss =
 spatial + 0.5 * Frechet + 0.1 * MSR + 1.0 * filter diversity. The encoder of epoch k is saved as encoder_ep{k}.pth
-(the released encoder is the last epoch, encoder_ep29.pth); latest.pth allows resuming with --resume.
+(the released encoder, pretrained.pth, is the last epoch, encoder_ep29.pth); latest.pth allows resuming with --resume.
 """
 import argparse
 import glob

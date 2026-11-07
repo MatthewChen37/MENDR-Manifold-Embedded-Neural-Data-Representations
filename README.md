@@ -55,9 +55,9 @@ cd weights && sha256sum -c SHA256SUMS
 
 | File | Content |
 |---|---|
-| `weights/encoder_ep29.pth` | pretrained encoder (TUH EEG Corpus, 30 epochs); sha256 `17be5e4492a67185a6675e8539a0f7001ba18960c541b6f648315c355de3eb9f` |
-| `weights/finetuned/<task>_s<seed>.pth` | fine-tuned classifier for each task and seed (seeds 789, 1024, 31, 64, 99) |
-| `weights/finetuned/physio_s<seed>_fold<k>.pth` | PhysioMI: one classifier per cross-validation fold (k = 0..4) |
+| `weights/pretrained.pth` | pretrained encoder (TUH EEG Corpus, 30 epochs), the starting point for fine-tuning; sha256 `17be5e4492a67185a6675e8539a0f7001ba18960c541b6f648315c355de3eb9f` |
+| `weights/Finetuned/<Task>/seed<N>.pth` | fine-tuned classifier for each task (Tuab, Tuev, Seedv, Chbmit, Isruc) and seed N (789, 1024, 31, 64, 99) |
+| `weights/Finetuned/Physio/seed<N>_fold<k>.pth` | PhysioMI: one classifier per seed and cross-validation fold (k = 0..4) |
 | `weights/MANIFEST.json` | per file: sha256, task, seed, fold, the run's validation and test scores (PhysioMI: per fold, plus the mean over folds) |
 
 Each fine-tuned file is the validation-selected `state_dict` of `MENDRClassifier` (build it with
@@ -95,7 +95,7 @@ and 3.8e-6 in absolute value; labels and sample order are identical).
 ## Reproducing Table 1
 
 ```
-python finetune.py --task tuab --data_root /data/TUAB/v3.0.1/edf --encoder weights/encoder_ep29.pth \
+python finetune.py --task tuab --data_root /data/TUAB/v3.0.1/edf --encoder weights/pretrained.pth \
     --seed 789 --out results/tuab_s789.json --cache_dir cache/
 cp scripts/data_roots.env.example data_roots.env          # set the six dataset directories
 bash scripts/run_table1.sh data_roots.env                  # all tasks and seeds
@@ -125,11 +125,11 @@ to about 0.02, with the task means within 0.01 of Table 1.
 ## Evaluating the released weights
 
 ```
-python evaluate.py --task tuab --data_root /data/TUAB/v3.0.1/edf --weights weights/finetuned/tuab_s789.pth --cache_dir cache/
-python evaluate.py --task physio --data_root /data/eegmmidb/1.0.0 --weights weights/finetuned/physio_s789.pth
+python evaluate.py --task tuab --data_root /data/TUAB/v3.0.1/edf --weights weights/Finetuned/Tuab/seed789.pth --cache_dir cache/
+python evaluate.py --task physio --data_root /data/eegmmidb/1.0.0 --weights weights/Finetuned/Physio/seed789.pth
 ```
-For PhysioMI, `--weights` names the seed (`physio_s789.pth`); the script evaluates `physio_s789_fold0.pth` ...
-`physio_s789_fold4.pth` on their folds and averages them.
+For PhysioMI, `--weights` names the seed (`seed789.pth`), and the script evaluates `seed789_fold0.pth` ...
+`seed789_fold4.pth` on their folds and averages them.
 
 MENDR evaluates the temporal path's BatchNorm layers with per-band statistics (`mendr/perband_bn.py`): the temporal path
 is applied to each frequency band separately, so each band is normalised with its own statistics, as during training.
@@ -147,7 +147,7 @@ python pretrain.py --cache_dir cache/tuh_200hz --checkpoint_dir checkpoints/mend
 
 `pretrain.py` defaults to the settings of the released encoder (30 epochs, batch 128, AdamW lr 5e-4, weight decay 0.05,
 seed 42, loss = spatial + 0.5 Frechet + 0.1 masked span reconstruction + 1.0 filter diversity); the released encoder is
-the last epoch, `encoder_ep29.pth`. The released encoder was trained on a cache of 50,210 TUH recordings from 14,559 subjects
+the last epoch, released as `pretrained.pth`. The released encoder was trained on a cache of 50,210 TUH recordings from 14,559 subjects
 preprocessed with the parameters that `preprocess_tuh.py` implements (recordings of 130 s or less skipped, 60 s trimmed at
 both ends of the others, 60 Hz notch, 0.1-75 Hz band-pass, 200 Hz, non-overlapping 6 s epochs, epochs above 100 uV
 rejected, x1e4 scaling). Checked on the TUAB recordings, which are part of the corpus: `preprocess_tuh.py` reproduces the
